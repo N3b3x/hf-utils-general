@@ -11,7 +11,7 @@
   *
   *   Note:  These functions are not thread or interrupt-safe and should be called
   *          called with appropriate guards if used within an ISR or shared between tasks.
-
+  */
 #ifndef RingBuffer_h
 #define RingBuffer_h
 

@@ -53,7 +53,6 @@
 #if __cplusplus >= 201703L  // C++17 and above
 #include <utility>
 
-template <typename Func, typename... Args>
 /**
  * @class DestructAction
  * @brief A utility class to invoke a specified function upon destruction.

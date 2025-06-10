@@ -11,7 +11,6 @@
 #define UTILITIES_COMMON_VARIABLETRACKERBASE_H_
 
 #include <cstdint>
-#include <ConsolePort.h>
 
 /**
  * @enum SlopeCalculationType
@@ -194,15 +193,6 @@ public:
 
     		/// Check if the past values have been around this average for the given duration, if so the flow is stabilized in given parameters.
     		valueConsistentlyInBound = CheckIfValueBetweenBoundConsistently(lowerThresholdValue, upperThresholdValue, durationMsec, useCurrentTime, minDataPoints);
-
-        	ConsolePort::WriteConditional(verbose,"VariableTrackerBase::IsValueStabilizedInMaxErrorBoundOverDeltaTime - Value In Bound [%s] - Average value [%.2f] - Bounds [%.2f,%.2f]",
-        			valueConsistentlyInBound ? "True":"False",
-        			static_cast<float>(averageValue),
-    				static_cast<float>(lowerThresholdValue),
-    				static_cast<float>(upperThresholdValue));
-    	}
-    	else {
-        	ConsolePort::WriteConditional(true,"VariableTrackerBase::IsValueStabilizedInMaxErrorBoundOverDeltaTime - Unable to get average value.");
     	}
 
     	return valueConsistentlyInBound;

@@ -10,8 +10,8 @@
 #ifndef UTILITIES_COMMON_ENUMERATEDSETSTATUS_H
 #define UTILITIES_COMMON_ENUMERATEDSETSTATUS_H
 
-#include <UTILITIES/common/MultibitSet.h>
-#include <UTILITIES/common/Utility.h>
+#include <MultibitSet.h>
+#include <Utility.h>
 
 
 /**

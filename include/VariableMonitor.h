@@ -45,13 +45,10 @@
 #include <numeric>
 #include <cmath>
 
-#include "UTILITIES/common/VariableTrackerBase.h"
-#include "UTILITIES/common/MutexGuard.h"
-#include "UTILITIES/common/RingBuffer.h"
-#include "UTILITIES/common/TimestampedVariable.h"
+#include "VariableTrackerBase.h"
+#include "RingBuffer.h"
+#include "TimestampedVariable.h"
 
-#include "HAL/component_handlers/ConsolePort.h"
-#include "platform_compat.h"
 
 enum class AnomalyType : uint8_t
 {

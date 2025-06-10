@@ -7,9 +7,10 @@
  * This file contains the declaration of a software version class.
  */
 
-#include<UTILITIES/common/SoftwareVersion.h>
 #include <cstdio>
 #include <cstring>
+
+#include "SoftwareVersion.h"
 
 //==============================================================//
 /// CURRENT SOFTWARE VERSION
@@ -39,7 +40,7 @@
  * - Minor version: 0
  * - Build number: 0001
  */
-SoftwareVersion softwareVersion ( 3, 0, 0000 );
+SoftwareVersion softwareVersion ( 1, 0, 0000 );
 
 //==============================================================//
 /// CLASS

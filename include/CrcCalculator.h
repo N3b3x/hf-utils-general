@@ -14,6 +14,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 /**
  * @brief Calculates the CRC for the input data buffer using the CRC-16/CCITT-False Algorithm.
  *

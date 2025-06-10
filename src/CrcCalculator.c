@@ -9,7 +9,8 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <UTILITIES/common/CrcCalculator.h>
+
+#include "CrcCalculator.h"
 
 /**
  * @brief Calculates the CRC for the input data buffer using the CRC-16/CCITT-False Algorithm.

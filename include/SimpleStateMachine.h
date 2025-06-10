@@ -20,13 +20,12 @@
 #ifndef SIMPLE_STATE_MACHINE_H
 #define SIMPLE_STATE_MACHINE_H
 
-#include "UTILITIES/common/RtosCompat.h"
 #include <math.h>
 
-#include "UTILITIES/common/MutexGuard.h"
-#include "UTILITIES/common/CommonIDs.h"
-#include "UTILITIES/common/TxUtility.h"
-#include "UTILITIES/common/TimeStampedVariable.h"
+#include "MutexGuard.h"
+#include "CommonIDs.h"
+#include "TxUtility.h"
+#include "TimeStampedVariable.h"
 
 /**
  * @brief A simple state machine class with thread ownership.

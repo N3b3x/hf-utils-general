@@ -10,7 +10,6 @@
 #ifndef UTILITIES_COMMON_STATEACTIONSBASE_H_
 #define UTILITIES_COMMON_STATEACTIONSBASE_H_
 
-#include "UTILITIES/common/RtosCompat.h"
 #include <functional>
 
 /**

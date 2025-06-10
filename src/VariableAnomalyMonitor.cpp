@@ -39,11 +39,8 @@
 #include <map>
 #include <cmath>
 
-#include "UTILITIES/common/TxUtility.h"
-#include "UTILITIES/common/VariableTrackerBase.h"
-#include "UTILITIES/common/VariableAnomalyMonitor.h"
-#include "UTILITIES/common/Mutex.h"
-#include "UTILITIES/common/MutexGuard.h"
+#include "VariableTrackerBase.h"
+#include "VariableAnomalyMonitor.h"
 
 /// Explicit instantiations:
 template class VariableAnomalyMonitor<float>;
@@ -92,8 +89,6 @@ VariableAnomalyMonitor<T>::VariableAnomalyMonitor(uint32_t minTimeBetweenSampleS
 
 template<typename T>
 bool VariableAnomalyMonitor<T>::UpdateValue(T newValue) {
-	MutexGuard guard(mutex);
-
     uint32_t currentTime = GetElapsedTimeMsec();
 
     /// TODO: Consider higher resolution timer if updates can occur within the same millisecond.
@@ -277,8 +272,6 @@ void VariableAnomalyMonitor<T>::SetCheckBelowThreshold(bool checkBelowThresholdA
 
 template<typename T>
 bool VariableAnomalyMonitor<T>::CheckThreshold() {
-	MutexGuard guard(mutex);
-
     if (CheckAnomalyDuration(thresholdAnomalies, thresholdAnomalyDurationMsec)) {
         /// Clear the deque and return true if the first anomaly in the deque has lasted for at least thresholdAnomalyDurationMsec
         thresholdAnomalies.clear();
@@ -494,7 +487,6 @@ bool VariableAnomalyMonitor<T>::GetAverageSchemeValue(T& averageValue, Averaging
 
 template<typename T>
 bool VariableAnomalyMonitor<T>::CheckSlope() {
-	MutexGuard guard(mutex);
     /// Setting whether we should check for values below or above the threshold.
     if (CheckAnomalyDuration(slopeAnomalies, slopeAnomalyDurationMsec)) {
         /// Clear the deque and return true if the first anomaly in the deque has lasted for at least slopeAnomalyDurationMsec

@@ -39,8 +39,7 @@
 #include <utility>
 #include <cstdint> // for uint32_t
 
-#include "UTILITIES/common/VariableTrackerBase.h"
-#include "UTILITIES/common/Mutex.h"
+#include "VariableTrackerBase.h"
 
 #define SET_CHECK_BELOW_THRESHOLD   true
 #define SET_CHECK_ABOVE_THRESHOLD   false

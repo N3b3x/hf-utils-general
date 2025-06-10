@@ -7,9 +7,8 @@
  *
  */
 
-#include"UTILITIES/common/TimeStampedVariable.h"
-
 #include <cfloat>
+#include "TimeStampedVariable.h"
 
 // Template specialization for for comparing timestamped values.
 

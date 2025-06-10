@@ -4,7 +4,7 @@
  */
 
 
-#include "UTILITIES/common/VariableMonitor.h"
+#include "VariableMonitor.h"
 
 bool IsSlopeAnomaly( float deltaValue, float deltaTimeMsec, float slopeLimit, SlopeType slopeType, AnomalyType slopeAnomalyType ) noexcept
 {

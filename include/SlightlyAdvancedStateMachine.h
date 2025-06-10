@@ -13,10 +13,10 @@
 #include <unordered_map>
 #include <functional>
 
-#include "UTILITIES/common/SimpleStateMachine.h"
-#include "UTILITIES/common/TimeStampedVariable.h"
-#include "UTILITIES/common/EnumArray.h"
-#include "UTILITIES/common/StateActionsBase.h"
+#include "SimpleStateMachine.h"
+#include "TimeStampedVariable.h"
+#include "EnumArray.h"
+#include "StateActionsBase.h"
 
 /**
  * @class SlightlyAdvancedStateMachine
