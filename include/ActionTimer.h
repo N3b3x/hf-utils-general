@@ -13,7 +13,7 @@
 #define UTILITIES_COMMON_ACTIONTIMER_H_
 
 #include <cstdint>
-#include "UTILITIES/common/TxUtility.h"
+#include "Utility.h"
 
 /**
  * @brief Class to measure the duration of an action.

@@ -14,7 +14,7 @@
 #include <functional>
 
 #include "SimpleStateMachine.h"
-#include "TimeStampedVariable.h"
+#include "TimestampedVariable.h"
 #include "EnumArray.h"
 #include "StateActionsBase.h"
 
@@ -70,8 +70,6 @@ public:
     using SimpleStateMachine<EnumType>::SetNextState;
     using SimpleStateMachine<EnumType>::SetRequestedState;
     using SimpleStateMachine<EnumType>::ClearRequestedState;
-    using SimpleStateMachine<EnumType>::LockOwnership;
-    using SimpleStateMachine<EnumType>::UnlockOwnership;
 
     //==============================================================//
     /// STATE ACTIONS MANAGERS
@@ -353,12 +351,7 @@ bool SlightlyAdvancedStateMachine<EnumType,NumberOfStates>::StepToNextState()
     /// If next state is set
     if(SimpleStateMachine<EnumType>::isNextStateSet)
     {
-        /// If current thread is allowed to step state machine
-        TX_THREAD *currentThread = tx_thread_identify();
-        if (SimpleStateMachine<EnumType>::ownerThread == nullptr || SimpleStateMachine<EnumType>::ownerThread == currentThread)
-        {
-            MutexGuard guard(SimpleStateMachine<EnumType>::stateMutex);
-			bool stateExitSuccess = false;
+        bool stateExitSuccess = false;
 
     		/// Let's set the current action to state exiting
     		SimpleStateMachine<EnumType>::SetCurrAction(state_machine_curr_action_t::STATE_EXITING);

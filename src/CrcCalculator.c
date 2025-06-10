@@ -23,9 +23,9 @@
  * @return CRC value as a 16-bit unsigned integer.
  */
 
-uint16_t crc16( const void* data, uint32_t count)
+uint16_t crc16(const void* data, uint32_t count)
 {
-	const uint8_t* pData = data;
+    const uint8_t* pData = (const uint8_t*)data;
     uint32_t crc = 0x0000FFFF;
     
     if( data != NULL )

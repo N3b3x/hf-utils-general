@@ -16,11 +16,6 @@
 
 #include "platform_compat.h"
 
-#include <UTILITIES/common/CommonIDs.h>
-#include <UTILITIES/common/ThingsToString.h>
-
-#include <HAL/component_handlers/ConsolePort.h>
-
 /**
  * @brief A class template to manage multiple sensor readings.
  *
@@ -276,12 +271,12 @@ public:
             }
             else
             {
-                ConsolePort::Write("MultiReadings::GetAverage() - Zero readings for: %s.", identifierTypeToString(identifier));
+                // No readings recorded for this identifier
             }
         }
         else
         {
-            ConsolePort::Write("MultiReadings::GetAverage() - Failed to find entry for: %s.", identifierTypeToString(identifier));
+            // Identifier not found
         }
 
         return false;

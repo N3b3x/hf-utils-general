@@ -22,6 +22,56 @@
 #include <utility>
 #include <stdbool.h>
 #include <atomic>
+#include <chrono>
+
+constexpr uint32_t NO_WAIT = 0u;
+
+inline uint32_t GetElapsedTimeMsec()
+{
+    using namespace std::chrono;
+    static const auto start = steady_clock::now();
+    return static_cast<uint32_t>(duration_cast<milliseconds>(steady_clock::now() - start).count());
+}
+
+inline void DelayMsec(uint32_t msec)
+{
+    const auto end = GetElapsedTimeMsec() + msec;
+    while (GetElapsedTimeMsec() < end) {}
+}
+
+enum TimeUnit {
+    NANOSECONDS,
+    MICROSECONDS,
+    MILLISECONDS,
+    SECONDS,
+    MINUTES,
+    HOURS,
+    DAYS,
+    YEARS
+};
+
+enum pressure_unit_id_t {
+    PRESSURE_UNIT_PSI,
+    PRESSURE_UNIT_PA,
+    PRESSURE_UNIT_BAR,
+    PRESSURE_UNIT_ATM,
+    PRESSURE_UNIT_MMHG,
+    PRESSURE_UNIT_INHG,
+    PRESSURE_UNIT_MBAR
+};
+
+enum flow_unit_id_t {
+    FLOW_UNIT_SLPM,
+    FLOW_UNIT_CMH,
+    FLOW_UNIT_CFM,
+    FLOW_UNIT_CIS
+};
+
+enum temp_unit_id_t {
+    TEMP_C,
+    TEMP_F,
+    TEMP_K
+};
 
 #ifdef __cplusplus
 #include <string>
@@ -72,11 +122,6 @@ std::string StringTrim(const std::string& str);
 std::vector<std::string> StringSplit(const std::string& str, char delimiter);
 #endif
 
-#ifndef CONSOLEPORTWRITE_H
-#define CONSOLEPORTWRITE_H
-#define CONSOLE_WRITE(c,s) if((c)) { consolePort.Write((s)); }
-#define CONSOLE_PWRITE(c,s) if((c)) { p_consolePort->Write((s)); }
-#endif // CONSOLEPORTWRITE_H
 
 #ifndef TIMECONVERSION_H
     #define TIMECONVERSION_H

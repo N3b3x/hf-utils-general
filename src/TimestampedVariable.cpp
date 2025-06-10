@@ -8,7 +8,8 @@
  */
 
 #include <cfloat>
-#include "TimeStampedVariable.h"
+#include <cmath>
+#include "TimestampedVariable.h"
 
 // Template specialization for for comparing timestamped values.
 

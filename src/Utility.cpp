@@ -7,10 +7,10 @@
   *  Contains the declaration and definition of the utility functions for general use.
   *
   *   Note:  These functions are not thread or interrupt-safe and should be called
-  *          called with appropriate guards if used within an ISR or shared between tasks.
+ *          called with appropriate guards if used within an ISR or shared between tasks.
+ */
 
 #include "Utility.h"
-#include "TxUtility.h"
 #include "platform_compat.h"
 
 #include <string>
@@ -310,7 +310,7 @@ bool TestLogicWithTimeout(const std::function<bool()>& logic, bool expected, uin
     bool status = false;
 
     /// If no wait specified, just evaluate and leave
-    if(timeoutMs == TX_NO_WAIT) {
+    if(timeoutMs == NO_WAIT) {
     	if (logic() == expected) {
     		status = true;
 		}
@@ -319,13 +319,14 @@ bool TestLogicWithTimeout(const std::function<bool()>& logic, bool expected, uin
     /// Otherwise, evaluate in a while loop.
     else {
         uint64_t endTime = static_cast<uint64_t>(startTime) + static_cast<uint64_t>(timeoutMs);
-		while (GetElapsedTimeMsec() <= endTime) {
-			if (logic() == expected) {
-				status = true;
-				break;
-			}
-			TxDelayMsec( static_cast<uint16_t>(CONSTRAIN(timeBetweenChecksMs, 1, timeoutMs)) );
-		}
+        while (GetElapsedTimeMsec() <= endTime) {
+            if (logic() == expected) {
+                status = true;
+                break;
+            }
+            uint32_t waitEnd = GetElapsedTimeMsec() + static_cast<uint16_t>(CONSTRAIN(timeBetweenChecksMs, 1, timeoutMs));
+            while (GetElapsedTimeMsec() < waitEnd) {}
+        }
     }
 
 	if(pTimeTakenSav) {*pTimeTakenSav = (GetElapsedTimeMsec()-startTime);} /// Store time taken (calculated for start time to end)

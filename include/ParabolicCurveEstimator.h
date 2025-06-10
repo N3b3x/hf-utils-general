@@ -6,7 +6,6 @@
 #ifndef PARABOLICCURVEESTIMATOR_H_
 #define PARABOLICCURVEESTIMATOR_H_
 
-#include <iostream>
 #include <vector>
 #include <cmath>
 
