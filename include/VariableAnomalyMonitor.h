@@ -38,7 +38,7 @@
 #include <deque>
 #include <utility>
 #include <cstdint> // for uint32_t
-
+#include "Utility.h"
 #include "VariableTrackerBase.h"
 
 #define SET_CHECK_BELOW_THRESHOLD   true
@@ -452,10 +452,6 @@ private:
     uint32_t minTimeBetweenUpdateSampleStoringMsec; ///< Minimum timestamp difference the new data must have before allowing storage in Deque.
                                                     ///< Allows user to set some bounds on the amount of data stored in deque.
 
-    Mutex mutex;          						///< ThreadX mutex object for thread safety
-    Mutex configMutex;          				///< ThreadX mutex object for thread safety
-    static const char mutexName[];				///< ThreadX mutex object name
-    static const char configMutexName[];		///< ThreadX mutex object name
 
     T threshold;                                ///< The threshold value.
     bool checkBelowThreshold;                   ///< True if checking for values below the threshold, false if checking for values above the threshold.

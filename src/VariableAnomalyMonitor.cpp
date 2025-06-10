@@ -46,12 +46,6 @@
 template class VariableAnomalyMonitor<float>;
 template class VariableAnomalyMonitor<int>;
 
-template<typename T>
-const char VariableAnomalyMonitor<T>::mutexName[] = "VariableAnomalyMonitorClassMutex";
-
-template<typename T>
-const char VariableAnomalyMonitor<T>::configMutexName[] = "VariableAnomalyMonitorClassConfigMutex";
-
 static constexpr uint32_t MinTimeBetweenSamples = 1U;
 
 template<typename T>
@@ -68,8 +62,6 @@ VariableAnomalyMonitor<T>::VariableAnomalyMonitor(uint32_t minTimeBetweenSampleS
  :
     values(),
     minTimeBetweenUpdateSampleStoringMsec( std::max( minTimeBetweenSampleStoreMsec, MinTimeBetweenSamples)),   // Must be at least 1 msec to avoid zero divide on slope.
-	mutex(mutexName),
-	configMutex(configMutexName),
     threshold(thresholdArg),
     checkBelowThreshold(checkBelowThresholdArg),
     thresholdTimePeriodMsec(thresholdTimePeriodMsecArg),
@@ -223,7 +215,6 @@ void VariableAnomalyMonitor<T>::SetMinTimeBetweenUpdateStoreMsec(uint32_t minTim
 
 template<typename T>
 void VariableAnomalyMonitor<T>::SetSlopeLimit(double slope, uint32_t timePeriodMsec, uint32_t anomalyDurationMsec) {
-	MutexGuard guard(configMutex);
 
     /// Setting the slope limit, time period for slope calculation and duration of time for which the slope anomaly must exist.
     slopeLimit = slope;
@@ -233,13 +224,11 @@ void VariableAnomalyMonitor<T>::SetSlopeLimit(double slope, uint32_t timePeriodM
 
 template<typename T>
 void VariableAnomalyMonitor<T>::UseAbsoluteSlope(bool useAbsolute) {
-	MutexGuard guard(configMutex);
     useAbsoluteSlope = useAbsolute;
 }
 
 template<typename T>
 void VariableAnomalyMonitor<T>::SetThreshold(T newThreshold, uint32_t timePeriodMsec, uint32_t anomalyDurationMsec) {
-	MutexGuard guard(configMutex);
 
     /// Setting the threshold, time period for threshold checking and duration of time for which the threshold anomaly must exist.
     threshold = newThreshold;
@@ -249,7 +238,6 @@ void VariableAnomalyMonitor<T>::SetThreshold(T newThreshold, uint32_t timePeriod
 
 template<typename T>
 void VariableAnomalyMonitor<T>::SetThreshold(T newThreshold) {
-	MutexGuard guard(configMutex);
 
     /// Setting the threshold, time period for threshold.
     threshold = newThreshold;
@@ -257,14 +245,12 @@ void VariableAnomalyMonitor<T>::SetThreshold(T newThreshold) {
 
 template<typename T>
 void VariableAnomalyMonitor<T>::SetThresholdAnomalyDurationMsec(uint32_t anomalyDurationMsec) {
-	MutexGuard guard(configMutex);
 
     thresholdAnomalyDurationMsec = anomalyDurationMsec;
 }
 
 template<typename T>
 void VariableAnomalyMonitor<T>::SetCheckBelowThreshold(bool checkBelowThresholdArg) {
-	MutexGuard guard(configMutex);
 
     /// Setting whether we should check for values below or above the threshold.
     checkBelowThreshold = checkBelowThresholdArg;

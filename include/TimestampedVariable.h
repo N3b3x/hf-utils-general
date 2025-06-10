@@ -11,7 +11,8 @@
 #define TIMESTAMPED_VARIABLE_H
 
 #include <cstdint> /// for uint32_t
-#include <TxUtility.h>
+#include "Utility.h"
+#include <cmath>
 
 /**
  * @class TimestampedVariable

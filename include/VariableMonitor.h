@@ -44,6 +44,9 @@
 #include <algorithm>
 #include <numeric>
 #include <cmath>
+#include <vector>
+#include "Utility.h"
+#include "platform_compat.h"
 
 #include "VariableTrackerBase.h"
 #include "RingBuffer.h"
@@ -144,10 +147,6 @@ public:
 	  */
 	bool GetMinValue( Type& value ) const noexcept;
 
-	/**
-	 * @brief Prints the values out to buffer [WARNING: Could be lengthy if value buffer is big]
-	 */
-	void PrintValues(const char* bufferName) noexcept;
 
 	/// Constants to determine the size of buffers.  A buffer can be zero length
 
@@ -494,9 +493,6 @@ private:
      */
     bool CalculateSlopeFromType(const std::vector<double> &slopes, SlopeCalculationType calcType, double &resultSlope);
 
-    mutable Mutex mutex;          						///< Mutex object for thread safety
-    static const char mutexName[];				///< Mutex object name
-
     ValueBuffer values;      ///< Buffer to store time-stamped value.
 
     Type threshold;                             ///< The threshold value.
@@ -513,8 +509,7 @@ private:
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::VariableMonitor(
 		Type thresholdArg,	 AnomalyType thresholdAnomalyTypeArg,
-		float slopeLimitArg, AnomalyType slopeAnomalyTypeArg, SlopeType slopeTypeArg) noexcept :
-	mutex("VariableMonitorMutex"),
+                float slopeLimitArg, AnomalyType slopeAnomalyTypeArg, SlopeType slopeTypeArg) noexcept :
     values{},
     threshold(thresholdArg),
 	thresholdAnomalyType(thresholdAnomalyTypeArg),
@@ -705,7 +700,6 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 {
 	const TimestampedVariable<Type> timestampedValue( newValue );   // Create a time-stamped variable
 
-	MutexGuard guard(mutex);
 	auto valueIterator = values.rbegin();
 	auto endIterator =  values.rend();
     if( valueIterator != endIterator ) // Make sure its not empty
@@ -755,20 +749,18 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 	{
     	if( thresholdAnomalyType == AnomalyType::AboveLimit  ) /// Use absolute values for comparison
     	{
-    		if( timestampedValue.GetValue() > threshold )
-    		{
-    			thresholdAnomalies.Append( timestampedValue.GetTimestamp());
-    		//	ConsolePort::Write("Added threshold anomaly, Value: %.1f, threshold: %.1f.",  (float)timestampedValue.GetValue(), (float)threshold );
-    		}
-    		else  // Not an anomaly, clear the threshold anomaly buffer
-			{
-    			thresholdAnomalies.Erase();
-			}
+                if( timestampedValue.GetValue() > threshold )
+                {
+                        thresholdAnomalies.Append( timestampedValue.GetTimestamp());
+                }
+                else  // Not an anomaly, clear the threshold anomaly buffer
+                {
+                        thresholdAnomalies.Erase();
+                }
     	}
     	else if( timestampedValue.GetValue() < threshold )
 		{
     		thresholdAnomalies.Append(timestampedValue.GetTimestamp());
-    		//ConsolePort::Write("Added threshold anomaly, Value: %.1f, threshold: %.1f.",  (float)timestampedValue.GetValue(), (float)threshold );
 		}
     	else  // Not an anomaly, clear the threshold anomaly buffer
 		{
@@ -779,40 +771,6 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
     return true;
 }
 
-template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
-void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::PrintValues(const char* bufferName) noexcept
-{
-    MutexGuard guard(mutex);
-    auto valueIterator = values.begin();
-    uint32_t previousTimestamp = 0;
-    ConsolePort::Write("//====================================================//");
-    ConsolePort::Write("//== VariableMonitor - Printing [%s] Monitor Buffer", bufferName);
-    ConsolePort::Write("//====================================================//");
-    ConsolePort::Write("%-15s %-15s %-15s\n", "Timestamp", "Value", "Delta Time");
-    while(valueIterator != values.end())
-    {
-        uint32_t currentTimestamp = valueIterator->GetTimestamp();
-        uint32_t deltaTime = (valueIterator == values.begin()) ? 0 : currentTimestamp - previousTimestamp;
-        ConsolePort::Write("%-15u %-15.2f %-15u\n", currentTimestamp, static_cast<float>(valueIterator->GetValue()), deltaTime);
-        previousTimestamp = currentTimestamp;
-        ++valueIterator;
-    }
-}
-
-//template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
-//void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::PrintValues(const char* bufferName) noexcept
-//{
-//    MutexGuard guard(mutex);
-//    auto valueIterator = values.begin();
-//    ConsolePort::Write("//====================================================//");
-//    ConsolePort::Write("//== VariableMonitor - Printing [%s] Monitor Buffer");
-//    ConsolePort::Write("//====================================================//");
-//    while(valueIterator != values.end())
-//    {
-//    	ConsolePort::Write("Timestamp: %u, Value: %.2f\n", valueIterator->GetTimestamp(), static_cast<float>(valueIterator->GetValue()));
-//        ++valueIterator;
-//    }
-//}
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 Type VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::GetLastValue(uint32_t *timestamp) const noexcept
@@ -821,7 +779,6 @@ Type VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 	// This check covers the corner case of window bigger than time that has elapsed.
 	const uint32_t oldestTimeMsec = (currentTimeMsec > SampleWindowMsec) ? GetElapsedTimeMsec() - SampleWindowMsec : 0;
 
-	MutexGuard guard(mutex);
 	auto valueIterator = values.crbegin();
 
 	if( valueIterator != values.crend() )
@@ -844,7 +801,6 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 	// This check covers the corner case of window bigger than time that has elapsed.
 	const uint32_t oldestTimeMsec = (currentTimeMsec > SampleWindowMsec) ? GetElapsedTimeMsec() - SampleWindowMsec : 0;
 
-	MutexGuard guard(mutex);
 	auto valueIterator = values.crbegin();
 
 	if( valueIterator != values.crend() )
@@ -868,7 +824,6 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 	// This check covers the corner case of window bigger than time that has elapsed.
 	const uint32_t oldestTimeMsec = (currentTimeMsec > SampleWindowMsec) ? GetElapsedTimeMsec() - SampleWindowMsec : 0;
 
-	MutexGuard guard(mutex);
 	auto valueIterator = values.crbegin();
 
 	if( valueIterator != values.crend() )
@@ -894,7 +849,6 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 	// This check covers the corner case of window bigger than time that has elapsed.
 	const uint32_t oldestTimeMsec = (currentTimeMsec > SampleWindowMsec) ? GetElapsedTimeMsec() - SampleWindowMsec : 0;
 
-	MutexGuard guard(mutex);
 	auto valueIterator = values.crbegin();
 
 	if( valueIterator != values.crend() )
@@ -923,7 +877,6 @@ void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::SetSlopeLimit(double slope, uint32_t timePeriodMsec, uint32_t anomalyDurationMsec) {
-	MutexGuard guard(configMutex);
 
     /// Setting the slope limit, time period for slope calculation and duration of time for which the slope anomaly must exist.
     slopeLimit = slope;
@@ -935,13 +888,11 @@ void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::UseAbsoluteSlope(bool useAbsolute) {
-	MutexGuard guard(mutex);
     useAbsoluteSlope = useAbsolute;
 }
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::SetThreshold(Type newThreshold, uint32_t timePeriodMsec, uint32_t anomalyDurationMsec) {
-	MutexGuard guard(mutex);
 
     /// Setting the threshold, time period for threshold checking and duration of time for which the threshold anomaly must exist.
     threshold = newThreshold;
@@ -953,7 +904,6 @@ void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::SetThreshold(T newThreshold) {
-	MutexGuard guard(configMutex);
 
     /// Setting the threshold, time period for threshold.
     threshold = newThreshold;
@@ -961,7 +911,6 @@ void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::SetThresholdAnomalyDurationMsec(uint32_t anomalyDurationMsec) {
-	MutexGuard guard(configMutex);
 
     thresholdAnomalyDurationMsec = anomalyDurationMsec;
 }
@@ -969,7 +918,6 @@ void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::SetCheckBelowThreshold(bool checkBelowThresholdArg) {
-	MutexGuard guard(mutex);
 
     /// Setting whether we should check for values below or above the threshold.
     checkBelowThreshold = checkBelowThresholdArg;
@@ -977,7 +925,6 @@ void VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 
 template<typename Type, uint32_t MinTimeBetweenSamplesMsec, uint32_t SampleWindowMsec, uint32_t ThresholdWindowMsec, uint32_t SlopeWindowMsec>
 bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdWindowMsec,SlopeWindowMsec>::CheckThreshold() {
-	MutexGuard guard(mutex);
 
     if (CheckAnomalyDuration(thresholdAnomalies, thresholdAnomalyDurationMsec)) {
         /// Clear the deque and return true if the first anomaly in the deque has lasted for at least thresholdAnomalyDurationMsec
@@ -1178,7 +1125,6 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 {
 
 	/*
-	MutexGuard guard(mutex);
 
     /// Setting whether we should check for values below or above the threshold.
     if (CheckAnomalyDuration(slopeAnomalies, slopeAnomalyDurationMsec))
