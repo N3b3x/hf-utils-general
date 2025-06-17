@@ -1064,8 +1064,8 @@ bool VariableMonitor<Type,MinTimeBetweenSamplesMsec,SampleWindowMsec, ThresholdW
 			const_iterator endIterator = GetNewestEntry(endTimeMsec);
 			if( endIterator != values.crend() )
 			{
-				volatile const uint32_t startTimeMsec = (endTimeMsec > durationMsec) ? (endTimeMsec - durationMsec) : 0 ;
-				volatile uint32_t countDataPointsInTimeSpan = 0;
+				const uint32_t startTimeMsec = (endTimeMsec > durationMsec) ? (endTimeMsec - durationMsec) : 0 ;
+				uint32_t countDataPointsInTimeSpan = 0;
 
 				const_iterator valueIterator = GetOldestEntry(startTimeMsec);
 
