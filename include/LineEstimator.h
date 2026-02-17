@@ -12,67 +12,85 @@
 
 /**
  * @file LineEstimator.h
- * @brief Contains the LineEstimator class for estimating the slope of a line from data points
+ * @brief Contains the LineEstimator class for estimating the slope of a line from data points.
  */
 
-#include <vector>
+#include <array>
 #include <utility> // for std::pair
-#include <numeric> // for std::accumulate
+#include <cstddef>
 
 /**
  * @class LineEstimator
- * @brief A class for estimating the slope of a line from data points
+ * @brief A class for estimating the slope of a line from data points.
  *
- * This class allows you to add and clear data points, and estimate the average slope of the line formed by these points.
+ * Uses a fixed-capacity std::array so no heap allocation is required.
+ *
+ * @tparam MaxPoints  Maximum number of data points the estimator can hold.
  */
+template <size_t MaxPoints = 64>
 class LineEstimator {
 public:
     /**
-     * @brief Adds a new data point to the data vector
-     * @param x The x-coordinate of the data point
-     * @param y The y-coordinate of the data point
+     * @brief Adds a new data point.
+     * @param x The x-coordinate of the data point.
+     * @param y The y-coordinate of the data point.
+     * @return true if the point was added, false if at capacity.
      */
-    void AddPoint(float x, float y) {
-        data.push_back(std::make_pair(x, y));
+    bool AddPoint(float x, float y) {
+        if (count_ >= MaxPoints) {
+            return false;
+        }
+        data_[count_++] = {x, y};
+        return true;
     }
 
     /**
-     * @brief Clears all data points from the data vector
+     * @brief Clears all data points.
      */
     void ClearPoints() {
-        data.clear();
+        count_ = 0;
     }
 
     /**
-     * @brief Estimates the average slope of the line formed by the data points
-     * @return The estimated slope of the line. Returns 0 if there are not enough data points to estimate the slope.
-     *
-     * This method implements the formula for the slope of a line in a least squares sense.
+     * @brief Returns the current number of stored data points.
      */
-    float EstimateSlope() {
-        if (data.size() < 2) {
-            return 0;
+    [[nodiscard]] size_t Size() const { return count_; }
+
+    /**
+     * @brief Returns the maximum capacity.
+     */
+    [[nodiscard]] static constexpr size_t Capacity() { return MaxPoints; }
+
+    /**
+     * @brief Estimates the average slope of the line formed by the data points.
+     * @return The estimated slope of the line. Returns 0 if there are fewer than 2 data points.
+     *
+     * Implements the formula for the slope of a line in a least squares sense.
+     */
+    float EstimateSlope() const {
+        if (count_ < 2) {
+            return 0.0f;
         }
 
-        float x_sum = 0.0, y_sum = 0.0, xy_sum = 0.0, xx_sum = 0.0;
-        for (const auto& point : data) {
-            x_sum += point.first;
-            y_sum += point.second;
-            xy_sum += point.first * point.second;
-            xx_sum += point.first * point.first;
+        float x_sum = 0.0f, y_sum = 0.0f, xy_sum = 0.0f, xx_sum = 0.0f;
+        for (size_t i = 0; i < count_; ++i) {
+            x_sum += data_[i].first;
+            y_sum += data_[i].second;
+            xy_sum += data_[i].first * data_[i].second;
+            xx_sum += data_[i].first * data_[i].first;
         }
 
-        float n = data.size();
-        float slope = (n * xy_sum - x_sum * y_sum) / (n * xx_sum - x_sum * x_sum);
-        return slope;
+        float n = static_cast<float>(count_);
+        float denom = n * xx_sum - x_sum * x_sum;
+        if (denom == 0.0f) {
+            return 0.0f;
+        }
+        return (n * xy_sum - x_sum * y_sum) / denom;
     }
 
 private:
-    /**
-     * @brief A vector of pairs to store the data points
-     */
-    std::vector<std::pair<float, float>> data;
-
+    std::array<std::pair<float, float>, MaxPoints> data_{};
+    size_t count_ = 0;
 };
 
 #endif /* UTILITIES_COMMON_LINEESTIMATOR_H_ */

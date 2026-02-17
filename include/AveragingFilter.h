@@ -433,9 +433,10 @@ template <uint32_t WindowSize> uint16_t AveragingFilter<uint16_t, WindowSize>::R
         {
            sum += filter[filterIndex];
         }
+        auto count = valuesLoadedCount;
         valuesLoadedCount = 0;
         nextSlot = 0;
-        return static_cast<uint16_t>( sum  / valuesLoadedCount);
+        return static_cast<uint16_t>( sum  / count);
    }
    return 0;
 }
