@@ -22,6 +22,7 @@ g++ -std=c++17 -Iinclude -c src/Utility.cpp
 - Timestamped variables
 - Simple and advanced state machines
 - CRC calculation routines
+- Control-loop helpers (`PID` — discrete PID with anti-windup, derivative-on-measurement, optional derivative LPF)
 
 These utilities are self-contained and avoid any direct console output.  They
 only use the C++ standard library and do not depend on platform specific
