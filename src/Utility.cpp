@@ -16,7 +16,6 @@
 #include <string>
 #include <algorithm> // For std::transform
 #include <cctype>    // For ::tolower, ::toupper
-#include <sstream>
 #include <vector>
 
 /**
@@ -78,17 +77,19 @@ std::string StringTrim(const std::string& str) {
  * @return A vector of substrings.
  */
 std::vector<std::string> StringSplit(const std::string& str, char delimiter) {
-    std::vector<std::string> tokens; ///< Vector to store the resulting substrings
-
-    std::istringstream tokenStream(str); ///< Input string stream to tokenize the input string
-    std::string token;               ///< Variable to hold each substring during splitting
-
-    /// Split the string based on the delimiter
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(token); ///< Add each substring to the vector
+    std::vector<std::string> tokens;
+    std::size_t start = 0;
+    const std::size_t n = str.size();
+    while (start <= n) {
+        const std::size_t end = str.find(delimiter, start);
+        if (end == std::string::npos) {
+            tokens.emplace_back(str, start, n - start);
+            break;
+        }
+        tokens.emplace_back(str, start, end - start);
+        start = end + 1U;
     }
-
-    return tokens; ///< Return the vector of substrings
+    return tokens;
 }
 
 
