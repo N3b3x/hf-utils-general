@@ -11,6 +11,7 @@
  */
 
 #include "Utility.h"
+#include "OsUtility.h"
 #include "platform_compat.h"
 
 #include <string>
@@ -325,8 +326,11 @@ bool TestLogicWithTimeout(const std::function<bool()>& logic, bool expected, uin
                 status = true;
                 break;
             }
-            uint32_t waitEnd = GetElapsedTimeMsec() + static_cast<uint16_t>(CONSTRAIN(timeBetweenChecksMs, 1, timeoutMs));
-            while (GetElapsedTimeMsec() < waitEnd) {}
+            // Must yield: a busy spin here starves same-core lower-priority
+            // tasks (e.g. SystemOrchestrator prio 5 waiting here pins Console RX
+            // prio 4 on PRO_CPU) so StartThreadAndWaitToVerify never observes
+            // IsThreadRunning() == true.
+            os_delay_msec(static_cast<uint16_t>(CONSTRAIN(timeBetweenChecksMs, 1, timeoutMs)));
         }
     }
 
