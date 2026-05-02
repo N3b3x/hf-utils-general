@@ -2,15 +2,10 @@
  * @file Utility.h
  * @brief Collection of generic helper functions.
  *
- * Nebula Tech Corporation
- *
- * Copyright © 2023 Nebula Tech Corporation.   All Rights Reserved.
- * This file is part of HardFOC and is licensed under the GNU General Public
- * License v3.0 or later.
- *
  * Contains the declaration and definition of general-purpose utility functions.
  * Note: These functions are not thread or interrupt-safe and should be called
  * with appropriate guards if used within an ISR or shared between tasks.
+ * @todo Add @copyright line once project copyright wording is finalised.
  */
 
 #ifndef UTILITY_H_

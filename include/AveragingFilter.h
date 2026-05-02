@@ -2,14 +2,9 @@
  * @file AveragingFilter.h
  * @brief Templated moving average filter.
  *
- * Nebula Tech Corporation
- *
- * Copyright © 2023 Nebula Tech Corporation.   All Rights Reserved.
- * This file is part of HardFOC and is licensed under the GNU General Public
- * License v3.0 or later.
- *
  * Contains the declaration of the AveragingFilter class that provides an
  * averaging or windowed filter.
+ * @todo Add @copyright line once project copyright wording is finalised.
  */
 #ifndef AveragingFilter_h
 #define AveragingFilter_h

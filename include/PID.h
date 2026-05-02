@@ -2,12 +2,6 @@
  * @file PID.h
  * @brief Lightweight, header-only discrete PID controller.
  *
- * Nebula Tech Corporation
- *
- * Copyright © 2026 Nebula Tech Corporation.   All Rights Reserved.
- * This file is part of HardFOC and is licensed under the GNU General Public
- * License v3.0 or later.
- *
  * Discrete PID controller intended for fixed-rate use inside a periodic
  * control task (typical pattern: one `Update()` call per `Step()` body of
  * a `BaseThread`-style worker). The implementation is deliberately tiny
@@ -44,6 +38,7 @@
  *   // ...inside Step():
  *   const float u = loop.Update(measured_psi);
  * @endcode
+ * @todo Add @copyright line once project copyright wording is finalised.
  */
 #ifndef PID_h
 #define PID_h

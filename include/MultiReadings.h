@@ -1,12 +1,10 @@
 /**
- * Nebula Tech Corporation
  *
- * Copyright © 2024 Nebula Tech Corporation. All Rights Reserved.
- * This file is part of HardFOC and is licensed under the GNU General Public License v3.0 or later.
+ * @todo Add @copyright line once project copyright wording is finalised.
  */
 
-#ifndef UTILITIES_COMMON_MULTIREADINGS_H_
-#define UTILITIES_COMMON_MULTIREADINGS_H_
+#ifndef HF_UTILS_GENERAL_MULTIREADINGS_H_
+#define HF_UTILS_GENERAL_MULTIREADINGS_H_
 
 #include <array>
 #include <initializer_list>
@@ -569,5 +567,5 @@ protected:
     pIdentifierTypeToStringFunc identifierTypeToString; 	///< Function to convert a channel to a string.
 };
 
-#endif /* UTILITIES_COMMON_MULTIREADINGS_H_ */
+#endif /* HF_UTILS_GENERAL_MULTIREADINGS_H_ */
 

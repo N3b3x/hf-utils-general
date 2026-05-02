@@ -2,19 +2,14 @@
  * @file MultibitSet.h
  * @brief Small wrapper around std::bitset for multi-bit entries.
  *
- * Nebula Tech Corporation
- *
- * Copyright © 2023 Nebula Tech Corporation. All Rights Reserved.
- * This file is part of HardFOC and is licensed under the GNU General Public
- * License v3.0 or later.
- *
  * The MultibitSet template manages a bitset partitioned into logical entries of
  * a fixed size.  Each element stores `BitsPerEntry` bits and the class provides
  * helpers to set, clear and fetch those fields by index.
+ * @todo Add @copyright line once project copyright wording is finalised.
  */
 
-#ifndef UTILITIES_COMMON_MULTIBITSET_H
-#define UTILITIES_COMMON_MULTIBITSET_H
+#ifndef HF_UTILS_GENERAL_MULTIBITSET_H
+#define HF_UTILS_GENERAL_MULTIBITSET_H
 
 #include <bitset>
 #include <cstdint>
@@ -139,4 +134,4 @@ private:
 };
 
 
-#endif /* UTILITIES_COMMON_MULTIBITSET_H */
+#endif /* HF_UTILS_GENERAL_MULTIBITSET_H */

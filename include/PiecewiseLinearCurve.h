@@ -1,17 +1,13 @@
 /**
  *
- * Nebula Tech Corporation
- *
- * Copyright © 2023 Nebula Tech Corporation. All Rights Reserved.
- * This file is part of HardFOC and is licensed under the GNU General Public License v3.0 or later.
- *
+ * @todo Add @copyright line once project copyright wording is finalised.
  */
 
-#ifndef UTILITIES_COMMON_PIECEWISEBOUNDEDLINEARCURVE_H_
-#define UTILITIES_COMMON_PIECEWISEBOUNDEDLINEARCURVE_H_
+#ifndef HF_UTILS_GENERAL_PIECEWISEBOUNDEDLINEARCURVE_H_
+#define HF_UTILS_GENERAL_PIECEWISEBOUNDEDLINEARCURVE_H_
 
-#include "UTILITIES/common/BoundedLinearCurve.h"
-#include "UTILITIES/common/DynamicArray.h"
+#include "BoundedLinearCurve.h"
+#include "DynamicArray.h"
 
 /**
  * @brief Class to represent a piecewise linear curve using multiple BoundedLinearCurve segments.
@@ -62,4 +58,4 @@ private:
     DynamicArray<BoundedLinearCurve, MaxSegments> segments; ///< Array to store the segments.
 };
 
-#endif // UTILITIES_COMMON_PIECEWISEBOUNDEDLINEARCURVE_H_
+#endif // HF_UTILS_GENERAL_PIECEWISEBOUNDEDLINEARCURVE_H_

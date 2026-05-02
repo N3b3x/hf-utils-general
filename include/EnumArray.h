@@ -1,14 +1,10 @@
 /**
  *
- * Nebula Tech Corporation
- *
- * Copyright © 2023 Nebula Tech Corporation. All Rights Reserved.
- * This file is part of HardFOC and is licensed under the GNU General Public License v3.0 or later.
- *
+ * @todo Add @copyright line once project copyright wording is finalised.
  */
 
-#ifndef UTILITIES_COMMON_ENUMARRAY_H_
-#define UTILITIES_COMMON_ENUMARRAY_H_
+#ifndef HF_UTILS_GENERAL_ENUMARRAY_H_
+#define HF_UTILS_GENERAL_ENUMARRAY_H_
 
 #include <array>
 
@@ -131,4 +127,4 @@ private:
 };
 
 
-#endif /* UTILITIES_COMMON_ENUMARRAY_H_ */
+#endif /* HF_UTILS_GENERAL_ENUMARRAY_H_ */
