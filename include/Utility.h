@@ -248,12 +248,14 @@ std::vector<std::string> StringSplit(const std::string& str, char delimiter);
     bool TestLogicWithTimeout(const std::function<bool()>& logic, bool expected, uint32_t timeoutMs, uint32_t timeBetweenChecksMs, uint32_t* pTimeTakenSaver=nullptr);
 #endif /* LOGICTESTER_H */
 
+#if !defined(_RENESAS_SYNERGY_) && !defined(PW_HAL_RENESAS_S5)
 #ifndef HIGH
 /**
  * @brief Logic level high value.
  *
  * Defined as 1 to avoid dependency on platform specific
  * definitions such as IOPORT_LEVEL_HIGH.
+ * Not defined on Renesas S5 — S5D5.h uses bitfield members named HIGH/LOW.
  */
 #define HIGH 1
 #endif
@@ -265,6 +267,7 @@ std::vector<std::string> StringSplit(const std::string& str, char delimiter);
  * Defined as 0 to keep the utility layer hardware agnostic.
  */
 #define LOW 0
+#endif
 #endif
 
 
