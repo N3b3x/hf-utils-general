@@ -248,29 +248,6 @@ std::vector<std::string> StringSplit(const std::string& str, char delimiter);
     bool TestLogicWithTimeout(const std::function<bool()>& logic, bool expected, uint32_t timeoutMs, uint32_t timeBetweenChecksMs, uint32_t* pTimeTakenSaver=nullptr);
 #endif /* LOGICTESTER_H */
 
-#if !defined(_RENESAS_SYNERGY_) && !defined(PW_HAL_RENESAS_S5)
-#ifndef HIGH
-/**
- * @brief Logic level high value.
- *
- * Defined as 1 to avoid dependency on platform specific
- * definitions such as IOPORT_LEVEL_HIGH.
- * Not defined on Renesas S5 — S5D5.h uses bitfield members named HIGH/LOW.
- */
-#define HIGH 1
-#endif
-
-#ifndef LOW
-/**
- * @brief Logic level low value.
- *
- * Defined as 0 to keep the utility layer hardware agnostic.
- */
-#define LOW 0
-#endif
-#endif
-
-
 #ifndef UNUSED
 	#define UNUSED(x) (void)(x)
 #endif
@@ -602,14 +579,6 @@ T GetSnapPointInWindow(T num, T windowMin, T windowMax, T delta) {
 #define FIELD_SET(data, mask, shift, value) \
 	(((data) & (~(mask))) | (((value) << (shift)) & (mask)))
 
-// Register read/write/update macros using Mask/Shift:
-#define FIELD_READ(read, motor, address, mask, shift) \
-	FIELD_GET(read(motor, address), mask, shift)
-#define FIELD_WRITE(write, motor, address, mask, shift, value) \
-	(write(motor, address, ((value)<<(shift)) & (mask)))
-#define FIELD_UPDATE(read, write, motor, address, mask, shift, value) \
-	(write(motor, address, FIELD_SET(read(motor, address), mask, shift, value)))
-
 // Memory access helpers
 // Force the compiler to access a location exactly once
 #ifndef typeof
@@ -628,10 +597,6 @@ T GetSnapPointInWindow(T num, T windowMin, T windowMax, T delta) {
 #else
     #define ACCESS_ONCE(x) (*((volatile typeof(x) *) (&x)))
 #endif /* __cplusplus */
-
-// Macro to remove write bit for shadow register array access
-#define TMC_ADDRESS(x) ((x) & (TMC_ADDRESS_MASK))
-
 
 template <std::size_t N>
 static constexpr float constexpr_sum(const std::array<float, N>& arr) {
