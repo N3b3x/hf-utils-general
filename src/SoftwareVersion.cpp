@@ -58,7 +58,8 @@ SoftwareVersion::SoftwareVersion(uint8_t majorArg, uint8_t minorArg, uint32_t bu
     build(buildArg),
     text()
 {
-    snprintf(text, sizeof(text), "v%u.%u.%lu", major, minor, build);
+    snprintf(text, sizeof(text), "v%u.%u.%lu",
+             major, minor, static_cast<unsigned long>(build));
 }
 
 /**

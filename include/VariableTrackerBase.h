@@ -174,7 +174,7 @@ public:
      */
     virtual bool GetAdvancedSlopeOverDeltaTime(uint32_t deltaTimeMsec, double &resultSlope, SlopeCalculationType calcType = SlopeCalculationType::AVERAGE, uint32_t windowSize = 3) noexcept = 0;
 
-    virtual bool IsValueStabilizedInMaxErrorBoundOverDeltaTime(float errorBound, uint32_t durationMsec, uint32_t minDataPoints = 2, bool verbose = false) {
+    virtual bool IsValueStabilizedInMaxErrorBoundOverDeltaTime(float errorBound, uint32_t durationMsec, uint32_t minDataPoints = 2, bool /*verbose*/ = false) {
     	T averageValue;
     	AveragingScheme scheme = AveragingScheme::MEAN;
     	bool useCurrentTime = true;
